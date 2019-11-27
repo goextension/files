@@ -19,6 +19,7 @@ func List(path string, ext string, depth int) (files []string, e error) {
 	if info.IsDir() {
 		file, e := os.Open(path)
 		if e != nil {
+			return nil, nil
 			return nil, fileWrap(e, "openfile")
 		}
 		defer file.Close()
@@ -37,12 +38,14 @@ func List(path string, ext string, depth int) (files []string, e error) {
 				files = append(files, ss...)
 			}
 		}
+		return files, nil
 	}
 
-	if ext != "" && filepath.Ext(path) == ext {
-		files = append(files, path)
+	if ext != "" && filepath.Ext(path) != ext {
+		return nil, nil
 	}
-	return files, nil
+
+	return append(files, path), nil
 }
 
 func fileWrap(e error, msg string) error {
