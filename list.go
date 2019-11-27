@@ -13,18 +13,18 @@ func List(path string, ext string, depth int) (files []string, e error) {
 	}
 	info, e := os.Stat(path)
 	if e != nil {
-		return nil, fileWrap(e, "file info")
+		return nil, fileWrap(e, "fileinfo")
 	}
 
 	if info.IsDir() {
 		file, e := os.Open(path)
 		if e != nil {
-			return nil, fileWrap(e, "open file")
+			return nil, fileWrap(e, "openfile")
 		}
 		defer file.Close()
 		names, e := file.Readdirnames(-1)
 		if e != nil {
-			return nil, fileWrap(e, "read dir")
+			return nil, fileWrap(e, "dir")
 		}
 		var fullPath string
 		for _, name := range names {
@@ -32,7 +32,7 @@ func List(path string, ext string, depth int) (files []string, e error) {
 			if depth > 0 {
 				ss, e := List(fullPath, ext, depth-1)
 				if e != nil {
-					return nil, fileWrap(e, "list dir")
+					return nil, fileWrap(e, "list")
 				}
 				files = append(files, ss...)
 			}
@@ -42,7 +42,6 @@ func List(path string, ext string, depth int) (files []string, e error) {
 	if ext != "" && filepath.Ext(path) == ext {
 		files = append(files, path)
 	}
-
 	return files, nil
 }
 
