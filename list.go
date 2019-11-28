@@ -19,8 +19,8 @@ func List(path string, ext string, depth int) (files []string, e error) {
 	if info.IsDir() {
 		file, e := os.Open(path)
 		if e != nil {
+			//Ignore error
 			return nil, nil
-			return nil, fileWrap(e, "openfile")
 		}
 		defer file.Close()
 		names, e := file.Readdirnames(-1)
