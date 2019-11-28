@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const MaxDepth = 255
@@ -15,7 +16,7 @@ func List(path string, ext string, depth int) (files []string, e error) {
 	}
 	info, e := os.Stat(path)
 	if e != nil {
-		return nil, fileWrap(e, "fileinfo")
+		return nil, errWrap(e, "fileinfo")
 	}
 
 	if info.IsDir() {
@@ -27,7 +28,7 @@ func List(path string, ext string, depth int) (files []string, e error) {
 		defer file.Close()
 		names, e := file.Readdirnames(-1)
 		if e != nil {
-			return nil, fileWrap(e, "dir")
+			return nil, errWrap(e, "dir")
 		}
 		var fullPath string
 		for _, name := range names {
@@ -35,7 +36,7 @@ func List(path string, ext string, depth int) (files []string, e error) {
 			if depth > 0 {
 				ss, e := List(fullPath, ext, depth-1)
 				if e != nil {
-					return nil, fileWrap(e, "list")
+					return nil, errWrap(e, "list")
 				}
 				files = append(files, ss...)
 			}
@@ -43,13 +44,23 @@ func List(path string, ext string, depth int) (files []string, e error) {
 		return files, nil
 	}
 
-	if ext != "" && filepath.Ext(path) != ext {
+	if ext != "" && !compareExt(filepath.Ext(path), ext) {
 		return nil, nil
 	}
 
 	return append(files, path), nil
 }
 
-func fileWrap(e error, msg string) error {
+func compareExt(pathext, ext string) bool {
+	exts := strings.Split(ext, ",")
+	for _, e := range exts {
+		if pathext == e {
+			return true
+		}
+	}
+	return false
+}
+
+func errWrap(e error, msg string) error {
 	return fmt.Errorf("%s:%w", msg, e)
 }

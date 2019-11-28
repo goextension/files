@@ -8,7 +8,7 @@ func TestList(t *testing.T) {
 		t.Fatal(e)
 	}
 	t.Log(files1)
-	files2, e := List("d:\\", "", MaxDepth)
+	files2, e := List("d:\\", ".jpg,.mkv", 2)
 	if e != nil {
 		t.Fatal(e)
 	}
