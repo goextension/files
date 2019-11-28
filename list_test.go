@@ -3,9 +3,14 @@ package files
 import "testing"
 
 func TestList(t *testing.T) {
-	files, e := List("d:\\", "", 1)
+	files1, e := List("d:\\", "", 0)
 	if e != nil {
 		t.Fatal(e)
 	}
-	t.Log(files)
+	t.Log(files1)
+	files2, e := List("d:\\", "", MaxDepth)
+	if e != nil {
+		t.Fatal(e)
+	}
+	t.Log(files2)
 }

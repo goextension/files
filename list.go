@@ -6,6 +6,8 @@ import (
 	"path/filepath"
 )
 
+const MaxDepth = 255
+
 func List(path string, ext string, depth int) (files []string, e error) {
 	path, e = filepath.Abs(path)
 	if e != nil {
